@@ -15,25 +15,42 @@ const questions = [
     message: 'Please enter the author\'s name\t',
     default: 'Your name'
   },
+    {
+      type: 'confirm',
+      name: 'pushScript',
+      message: 'Do you want to setup your Bluemix deployment credentials?'
+    },
   {
+      when: function(response) {
+          return response.pushScript;
+      },
     type: 'input',
     name: 'hostName',
     message: 'Please enter your host name\t',
     default: 'If the address is small-talk.mybluemix.net it would be small-talk'
   },
   {
+      when: function(response) {
+          return response.pushScript;
+      },
     type: 'input',
     name: 'domainName',
     message: 'Please enter your domain name\t',
     default: 'If the address is small-talk.mybluemix.net it would be mybluemix.net'
   },
   {
+      when: function(response) {
+          return response.pushScript;
+      },
     type: 'input',
     name: 'spaceName',
     message: 'Please enter your Bluemix space name\t',
     default: 'i.e. dev, test, prod'
   },
   {
+      when: function(response) {
+          return response.pushScript;
+      },
     type: 'input',
     name: 'organization',
     message: 'Please enter your Bluemix organization name\t'
@@ -117,8 +134,6 @@ inquirer.prompt(questions).then(function(response) {
   let skillName = response.skillName;
   let author = response.author;
   let nlu = response.nlu;
-  let spaceName = response.spaceName;
-  let organization = response.organization;
 
     // create manifest.json file
     fs.readFile('manifest.json', 'utf8', function (err, data) {
@@ -126,7 +141,6 @@ inquirer.prompt(questions).then(function(response) {
             return console.log(err);
         }
         let manifestJSON = JSON.parse(data);
-        manifestJSON.name = skillName;
         manifestJSON.author = author;
         manifestJSON.nlu = nlu;
         fs.writeFile('manifest.json', JSON.stringify(manifestJSON, null, 2), function (err) {
@@ -168,23 +182,29 @@ inquirer.prompt(questions).then(function(response) {
         });
     }
 
-    let manifestYaml = yaml.load('manifest.yml');
-    manifestYaml.applications[0].name = skillName;
-    manifestYaml.applications[0].host = response.hostName;
-    fs.writeFile('manifest.yml', yaml.stringify(manifestYaml, 4), function (err) {
-        if (err) {
-            return console.log(err);
-        }
-        console.log('Manifest yml saved');
-    });
+    if(response.pushScript) {
+        let organization = response.organization;
+        let spaceName = response.spaceName;
+        let domnainName = response.domainName;
+        let manifestYaml = yaml.load('manifest.yml');
+        manifestYaml.applications[0].name = skillName;
+        manifestYaml.applications[0].host = response.hostName;
+        manifestYaml.applications[0].domain = response.domainName;
+        fs.writeFile('manifest.yml', yaml.stringify(manifestYaml, 4), function (err) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log('Manifest yml saved');
+        });
 
-    let pushScript = 'YML="manifest.yml"\n\nSPACE="' + spaceName + '"\n\nORGANIZATION="' + organization + '"\n\nbx target -s $SPACE -o $ORGANIZATION\nbx app push -f $YML';
-    fs.writeFile('push.sh', pushScript, function (err) {
-        if (err) {
-            return console.log(err);
-        }
-        console.log('Push script saved');
-    });
+        let pushScript = 'YML="manifest.yml"\n\nSPACE="' + spaceName + '"\n\nORGANIZATION="' + organization + '"\n\nbx target -s $SPACE -o $ORGANIZATION\nbx app push -f $YML';
+        fs.writeFile('push.sh', pushScript, function (err) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log('Push script saved');
+        });
+    }
 
     setTimeout(function() {
         console.log('\n-----------  Your skill is ready to go!  ------------\n');
