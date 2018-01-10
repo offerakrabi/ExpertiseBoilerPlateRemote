@@ -39,6 +39,7 @@ let converseCallback = function (result, response, context, err) {
         console.error(err);
     }
     else {
+        context.session.location = context.skill.location;
         // example of adding a card
         // example of a card sent to the application, the action and the json most of the time will come from WCS
         response.card('some action', {"some": "json"});
@@ -49,13 +50,9 @@ let converseCallback = function (result, response, context, err) {
 // Actions for DEFAULT state
 const stateDefaultActions = handler.createActionsHandler({
 
-    // this is an example of an intent using a regex engine, the intent catches the phrase "hello"
-    'hello-world': (request, response, context) => {
-        response.say(handler.t('HELLO_WORLD')).send();
-    },
     //this is an example of an intent using wcs - in order for this to work you need your own wcs workspace and intents
     //and change the intents name with your own
-    'hello-world-wcs': (request, response, context) => {
+    'im-in': (request, response, context) => {
         handler.converse(request, response, context, converseCallback)
     },
     'unhandled': (request, response, context) => {
