@@ -49,13 +49,10 @@ let converseCallback = function (result, response, context, err) {
 // Actions for DEFAULT state
 const stateDefaultActions = handler.createActionsHandler({
 
-    // this is an example of an intent using a regex engine, the intent catches the phrase "hello"
-    'hello-world': (request, response, context) => {
-        response.say(handler.t('HELLO_WORLD')).send();
-    },
     //this is an example of an intent using wcs - in order for this to work you need your own wcs workspace and intents
     //and change the intents name with your own
-    'hello-world-wcs': (request, response, context) => {
+    'where-am-i': (request, response, context) => {
+        context.skill.location = context.session.loction;
         handler.converse(request, response, context, converseCallback)
     },
     'unhandled': (request, response, context) => {
