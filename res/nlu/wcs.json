@@ -1,15 +1,15 @@
 {
   "workspace": {
     "en-US": {
-      "name": "your workspace name",
-      "workspace_id": "your workspace id"
+      "name": "save-location",
+      "workspace_id": "11d4e029-6d66-4384-be19-357f625f9ca8"
     }
   },
   "credentials": {
-    "url": "your wcs url",
-    "version": "your wcs version",
-    "version_date": "your wcs version date",
-    "password": "your wcs password",
-    "username": "your wcs username"
+    "version": "v1",
+    "version_date": "2017-04-21",
+    "url": "https://gateway.watsonplatform.net/conversation/api",
+    "username": "40f1d212-0e1d-4f00-aa20-3548d7f2bb61",
+    "password": "n4Gn4WsbQWWI"
   }
 }

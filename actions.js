@@ -73,23 +73,30 @@ let evaluationCallback = function(result, evaluationResponse, context, err) {
         console.error(err);
     }
     else {
-        if(!result) {
-            result = ['Nlu engine did not return an output'];
+        if(context.skill.handleUtterance === false) {
+            evaluationResponse.rejectUtterance().send();
         }
-        evaluationResponse.send(result[0]);
+        else {
+            evaluationResponse.send(result[0]);
+        }
     }
 };
+
 
 // Actions for DEFAULT state
 const stateDefaultActions = handler.createActionsHandler({
 
-    // this is an example of an intent using a regex engine, the intent catches the phrase "hello"
-    'hello-world': (request, response, context) => {
-        response.say(handler.t('HELLO_WORLD')).send();
+    'save-my-location': (request, response, context) => {
+        handler.saveEvaluationContext(context, request.evaluationResponse.context);
+        console.log(context.skill);
+        response.say(request.evaluationResponse.response).deleteSkillSession(false).send();
     },
-    //this is an example of an intent using wcs - in order for this to work you need your own wcs workspace and intents
-    //and change the intents name with your own
-    'hello-world-wcs': (request, response, context) => {
+    'yes': (request, response, context) => {
+        console.log(context.skill);
+        handler.saveEvaluationContext(context, request.evaluationResponse.context);
+        response.say(request.evaluationResponse.response).deleteSkillSession(false).send();
+    },
+    'no': (request, response, context) => {
         handler.converse(request, response, context, converseCallback);
     },
     'unhandled': (request, response, context) => {
@@ -97,6 +104,7 @@ const stateDefaultActions = handler.createActionsHandler({
     },
     //pre processing before the request evaluation
     evaluation: (request, evaluationResponse, context) => {
+        console.log(context.skill);
         handler.evaluateRequest(request, evaluationResponse, context, evaluationCallback);
     },
     // pre processing for entity based routing
