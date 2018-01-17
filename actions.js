@@ -94,7 +94,7 @@ const stateDefaultActions = handler.createActionsHandler({
     'yes': (request, response, context) => {
         console.log(context.skill);
         handler.saveEvaluationContext(context, request.evaluationResponse.context);
-        response.say(request.evaluationResponse.response).deleteSkillSession(false).send();
+        response.say(request.evaluationResponse.response).deleteSkillSession(true).send();
     },
     'no': (request, response, context) => {
         handler.converse(request, response, context, converseCallback);
@@ -109,7 +109,9 @@ const stateDefaultActions = handler.createActionsHandler({
     },
     // pre processing for entity based routing
     entities: (request, response, context) => {
-        handler.converse(request, response, context, converseCallback);
+        handler.saveEvaluationContext(context, request.evaluationResponse.context);
+        response.say(request.evaluationResponse.response).deleteSkillSession(true).send();
+        // handler.converse(request, response, context, converseCallback);
     }
 
 }, 'DEFAULT');
