@@ -91,6 +91,9 @@ const stateDefaultActions = handler.createActionsHandler({
         console.log(context.skill);
         response.say(request.evaluationResponse.response).deleteSkillSession(false).send();
     },
+    'im-in': (request, response, context) => {
+        handler.converse(request, response, context, converseCallback);
+    },
     'yes': (request, response, context) => {
         console.log(context.skill);
         handler.saveEvaluationContext(context, request.evaluationResponse.context);

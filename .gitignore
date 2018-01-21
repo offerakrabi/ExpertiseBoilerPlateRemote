@@ -2,6 +2,9 @@
 # Env
 .env
 
+#WCS credentials
+wcs.json
+
 # IDE files
 .idea
 
