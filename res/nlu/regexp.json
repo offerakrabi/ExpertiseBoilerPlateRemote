@@ -1,9 +1,9 @@
 {
   "intents" : [
     {
-      "name" : ["hello-world"],
+      "name" : ["lights-house"],
       "grammar" : [
-        "hello"
+        "turn on the lights"
       ]
     }
   ],

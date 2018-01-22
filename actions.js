@@ -73,6 +73,9 @@ let evaluationCallback = function(result, evaluationResponse, context, err) {
         console.error(err);
     }
     else {
+        if(context.utterance['location'] && context.utterance['location'] !== 'house') {
+            evaluationResponse.rejectUtterance().send();
+        }
         if(!result) {
             result = ['Nlu engine did not return an output'];
         }
@@ -84,20 +87,22 @@ let evaluationCallback = function(result, evaluationResponse, context, err) {
 const stateDefaultActions = handler.createActionsHandler({
 
     // this is an example of an intent using a regex engine, the intent catches the phrase "hello"
-    'hello-world': (request, response, context) => {
-        response.say(handler.t('HELLO_WORLD')).send();
-    },
-    //this is an example of an intent using wcs - in order for this to work you need your own wcs workspace and intents
-    //and change the intents name with your own
-    'hello-world-wcs': (request, response, context) => {
-        handler.converse(request, response, context, converseCallback);
+    'lights-house': (request, response, context) => {
+        response.say('Ok, turning on the lights in the house').send();
     },
     'unhandled': (request, response, context) => {
         response.say(handler.t('TRY_AGAIN')).send();
     },
     //pre processing before the request evaluation
     evaluation: (request, evaluationResponse, context) => {
-        handler.evaluateRequest(request, evaluationResponse, context, evaluationCallback);
+        console.log(context.utterance);
+        if(context.utterance['location'] && context.utterance['location'] !== 'house') {
+            // evaluationResponse.rejectUtterance().send();
+            handler.evaluateRequest(request, evaluationResponse, context, evaluationCallback);
+        }
+        else {
+            handler.evaluateRequest(request, evaluationResponse, context, evaluationCallback);
+        }
     },
     // pre processing for entity based routing
     entities: (request, response, context) => {
