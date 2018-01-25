@@ -7,8 +7,8 @@
 
 // Initialize handler
 const {handler} = require('skill-sdk-nodejs');
+const {init} = require('skill-sdk-nodejs');
 const manifest = require('./res/assets/manifest.json');
-const factory = require('skill-sdk-nodejs').factory;
 
 // Expertise configuration
 require('dotenv').config();
@@ -27,15 +27,7 @@ if(index > -1) {
         console.log('No Nlu engines selected, you need to add the nlu engines you want to use to manifest.nlu (along with "skill") ')
     }
     else {
-        factory.getNLUs(newManifest).then(updatedManifest => {
-            if (updatedManifest.nlu.regexp) {
-                updatedManifest.intents = require('./res/nlu/intents');
-            }
-            handler.manifest = updatedManifest;
-            factory.createAll(updatedManifest).then(function (engines) {
-                handler.engines = engines;
-            });
-        });
+        init(newManifest);
     }
 }
 
