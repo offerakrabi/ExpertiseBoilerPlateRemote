@@ -18,10 +18,9 @@ class Nlu extends Base {
     /**
      * Initializes the nlu engine
      * @param resource - the content of the nlu configuration file found int res/nlu
-     * @param force - deprecated
      * @returns {Promise<any>}
      */
-    init(resource, force) {
+    init(resource) {
         let self = this;
         return new Promise((resolve, reject) => {
             resolve(self);
