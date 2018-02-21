@@ -73,9 +73,6 @@ let evaluationCallback = function(result, evaluationResponse, context, err) {
         console.error(err);
     }
     else {
-        if(context.utterance['location'] && context.utterance['location'] !== 'house') {
-            evaluationResponse.rejectUtterance().send();
-        }
         if(!result) {
             result = ['Nlu engine did not return an output'];
         }
@@ -95,10 +92,8 @@ const stateDefaultActions = handler.createActionsHandler({
     },
     //pre processing before the request evaluation
     evaluation: (request, evaluationResponse, context) => {
-        console.log(context.utterance);
         if(context.utterance['location'] && context.utterance['location'] !== 'house') {
-            // evaluationResponse.rejectUtterance().send();
-            handler.evaluateRequest(request, evaluationResponse, context, evaluationCallback);
+            evaluationResponse.rejectUtterance().send();
         }
         else {
             handler.evaluateRequest(request, evaluationResponse, context, evaluationCallback);
